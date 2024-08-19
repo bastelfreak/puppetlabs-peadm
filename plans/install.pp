@@ -76,7 +76,7 @@ plan peadm::install (
   Peadm::Download_mode       $download_mode          = 'bolthost',
   Boolean                    $permit_unsafe_versions = false,
   String                     $token_lifetime         = '1y',
-  String[1] $node_group_environment = 'production',
+  String[1] $node_group_environment = peadm::get_node_group_environment($primary_host),
 ) {
   # Log parameters for debugging 
   peadm::log_plan_parameters({

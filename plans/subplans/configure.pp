@@ -46,7 +46,7 @@ plan peadm::subplans::configure (
   # Other
   String           $stagingdir                   = '/tmp',
   Enum['running', 'stopped'] $final_agent_state  = 'running',
-  String[1] $node_group_environment = 'production',
+  String[1] $node_group_environment = peadm::get_node_group_environment($primary_host),
 ) {
   # TODO: get and validate PE version
 
