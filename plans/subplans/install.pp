@@ -34,6 +34,8 @@
 #   standard public source. When specified, PEAdm will download directly from the
 #   URL given.
 #
+# @param node_group_environment environment for the PEADM specific node groups, if not set it will be gathered from pe.conf or production
+#
 plan peadm::subplans::install (
   # Standard
   Peadm::SingleTargetSpec           $primary_host,
@@ -71,6 +73,7 @@ plan peadm::subplans::install (
   Peadm::Download_mode  $download_mode          = 'bolthost',
   Boolean               $permit_unsafe_versions = false,
   String                $token_lifetime         = '1y',
+  String[1]             $node_group_environment = 'production',
 ) {
   peadm::assert_supported_pe_version($version, $permit_unsafe_versions)
 
@@ -338,10 +341,11 @@ plan peadm::subplans::install (
   # because PuppetDB can't start, if primary_postgresql_target is set. That's
   # expected, and handled by the task's install_extra_large parameter.
   run_task('peadm::pe_install', $primary_target,
-    tarball               => $upload_tarball_path,
-    peconf                => '/tmp/pe.conf',
-    puppet_service_ensure => 'stopped',
-    install_extra_large   => ($arch['architecture'] == 'extra-large'),
+    tarball                => $upload_tarball_path,
+    peconf                 => '/tmp/pe.conf',
+    puppet_service_ensure  => 'stopped',
+    install_extra_large    => ($arch['architecture'] == 'extra-large'),
+    node_group_environment => $node_group_environment,
   )
 
   parallelize($primary_targets) |$target| {

@@ -30,6 +30,13 @@ fi
 
 tar -C "$tgzdir" "$tar_options" "$PT_tarball"
 
+# ensure that the directory for the custom environment exists
+# node_manager resource will fail to modify a node group if the related environment doesn't exist
+if [ ! -z "$PT_node_group_environment" ]; then
+  # shellcheck disable=SC2174
+  mkdir --parents --mode 755 "/etc/puppetlabs/code/environments/${PT_node_group_environment}"
+fi
+
 if [ ! -z "$PT_peconf" ]; then
 	/bin/bash "${tgzdir}/${pedir}/puppet-enterprise-installer" -y -c "$PT_peconf"
 else

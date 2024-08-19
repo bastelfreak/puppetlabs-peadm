@@ -16,6 +16,10 @@
     "puppet_service_ensure": {
       "type": "Optional[Enum['stopped']]",
       "description": "If 'stopped', ensure the Puppet agent is not running when install completes"
+    },
+    "node_group_environment": {
+      "type": "Optional[String[1]]",
+      "description": "environment for the PEADM specific node groups, if not set it will be gathered from pe.conf or production"
     }
   },
   "input_method": "environment",
