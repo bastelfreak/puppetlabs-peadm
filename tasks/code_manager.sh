@@ -70,7 +70,7 @@ function main()
 function deploy()
 {
   [ "$#" = 1 ] || { echo "specify an environment to deploy"; exit 1; }
-  cm_r10k deploy environment "$1" -p && commit
+  cm_r10k deploy environment "$1" -p && commit && flush_classifier_classes "$1"
 }
 
 function commit()
@@ -151,6 +151,14 @@ function flush_environment_cache()
     'https://localhost:8140/puppet-admin-api/v1/environment-cache'
 }
 
+function flush_classifier_classes()
+{
+  curl_wrapper -ks --request POST \
+    --cert "/etc/puppetlabs/puppet/ssl/certs/${g_certname}.pem" \
+    --key "/etc/puppetlabs/puppet/ssl/private_keys/${g_certname}.pem" \
+    --cacert "/etc/puppetlabs/puppet/ssl/certs/ca.pem" \
+    "https://localhost:4433/classifier-api/v1/update-classes?environment=${1}"
+}
 function curl_wrapper()
 {
   [ "$g_verbose" = 'true' ] && echo "command: curl $@"
