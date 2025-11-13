@@ -93,8 +93,16 @@ plan peadm::subplans::configure (
     )
   }
 
-  # Set up the console node groups to configure the various hosts in their roles
+  # Deploy an environment if a deploy environment is specified
+  # in case we deploy an environment as an alternative to the default production env, we need to do this before calling peadm::setup::node_manager
+  # When we modify node groups, the referenced environment in those groups needs to exist
+  if $deploy_environment {
+    run_task('peadm::code_manager', $primary_target,
+      action => "deploy ${deploy_environment}",
+    )
+  }
 
+  # Set up the console node groups to configure the various hosts in their roles
   apply($primary_target) {
     class { 'peadm::setup::node_manager_yaml':
       primary_host => $primary_target.peadm::certname(),
@@ -156,13 +164,6 @@ plan peadm::subplans::configure (
         $replica_target,
         $replica_postgresql_target,
   ]))
-
-  # Deploy an environment if a deploy environment is specified
-  if $deploy_environment {
-    run_task('peadm::code_manager', $primary_target,
-      action => "deploy ${deploy_environment}",
-    )
-  }
 
   # Configure Puppet agent service status now that configuration is complete
   $systemctl_state = $final_agent_state ? {
