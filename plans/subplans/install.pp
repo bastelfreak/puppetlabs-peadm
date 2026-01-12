@@ -61,6 +61,10 @@ plan peadm::subplans::install (
   Optional[Peadm::Pem] $r10k_private_key_content = undef,
   Optional[Peadm::Known_hosts] $r10k_known_hosts = undef,
 
+  # Legacy license key
+  Optional[String]     $legacy_license_key_file    = undef,
+  Optional[String]     $legacy_license_key_content = undef,
+
   # License key
   Optional[String]     $license_key_file    = undef,
   Optional[String]     $license_key_content = undef,
@@ -157,6 +161,9 @@ plan peadm::subplans::install (
   } else {
     $code_manager_auto_configure
   }
+
+  # Process user input for legacy license key (same process as for r10k private key above).
+  $legacy_license_key = peadm::file_or_content('legacy_license_key', $legacy_license_key_file, $legacy_license_key_content)
 
   # Process user input for license key (same process as for r10k private key above).
   $license_key = peadm::file_or_content('license_key', $license_key_file, $license_key_content)
@@ -353,9 +360,16 @@ plan peadm::subplans::install (
       )
     }
 
-    if $license_key {
+    if $legacy_license_key {
       run_task('peadm::mkdir_p_file', $target,
         path    => '/etc/puppetlabs/license.key',
+        mode    => '0644',
+        content => $legacy_license_key,
+      )
+    }
+    elsif $license_key {
+      run_task('peadm::mkdir_p_file', $target,
+        path    => '/etc/puppetlabs/suite-license.lic',
         mode    => '0644',
         content => $license_key,
       )

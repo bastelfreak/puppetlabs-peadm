@@ -63,9 +63,12 @@ plan peadm::install (
   Optional[Peadm::Known_hosts]      $r10k_known_hosts         = undef,
   Optional[String]                  $deploy_environment       = undef,
 
-  # License Key
-  Optional[String]                  $license_key_file    = undef,
-  Optional[String]                  $license_key_content = undef,
+  # License Key (legacy parameters)
+  Optional[String]                  $legacy_license_key_file    = undef,
+  Optional[String]                  $legacy_license_key_content = undef,
+  # License Key (new parameters for suite-license.lic formatted licenses)
+  Optional[String]                  $license_file    = undef,
+  Optional[String]                  $license_content = undef,
 
   # Other
   Optional[String]           $stagingdir             = undef,
@@ -116,6 +119,10 @@ plan peadm::install (
     r10k_private_key_file          => $r10k_private_key_file,
     r10k_private_key_content       => $r10k_private_key_content,
     r10k_known_hosts               => $r10k_known_hosts,
+
+    # Legacy License Key
+    legacy_license_key_file        => $legacy_license_key_file,
+    legacy_license_key_content     => $legacy_license_key_content,
 
     # License Key
     license_key_file               => $license_key_file,
