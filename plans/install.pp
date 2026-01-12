@@ -67,8 +67,8 @@ plan peadm::install (
   Optional[String]                  $legacy_license_key_file    = undef,
   Optional[String]                  $legacy_license_key_content = undef,
   # License Key (new parameters for suite-license.lic formatted licenses)
-  Optional[String]                  $license_file    = undef,
-  Optional[String]                  $license_content = undef,
+  Optional[String]                  $license_key_file    = undef,
+  Optional[String]                  $license_key_content = undef,
 
   # Other
   Optional[String]           $stagingdir             = undef,
